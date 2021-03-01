@@ -15,14 +15,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.NotNull;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class JDK9JavaDocParser {
@@ -42,9 +45,9 @@ public class JDK9JavaDocParser {
         this.gson = new GsonBuilder().setPrettyPrinting().create();
         this.cssQuery = new Properties();
         this.spiderConfig = new Properties();
-        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"));
         cssQuery.load(cssQueryInputStream);
         spiderConfig.load(spiderConfigInputStream);
+        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"));
     }
 
     public JDK9JavaDocParser() {
@@ -95,6 +98,14 @@ public class JDK9JavaDocParser {
                 cssQuery.getProperty("brief_introduction"), document, "TEXT").get(0);
         return brief_introduction;
     }
+
+    private String getBrifeintroduction_alternative(Document document) {
+        List<DataNode> DataNodes=parser.textNodes(document,cssQuery.getProperty("brief_introduction"));
+        DataNode element=DataNodes.get(0);
+        return element.getWholeData();
+    }
+
+
 
     private String getClassName(Document document) {
         String ClassName = parser.getAttributesFromElementByCssQuery(
@@ -159,4 +170,19 @@ public class JDK9JavaDocParser {
                 "TEXT"
         );
     }
+
+
+    /* ***************************************************************************************
+     *                                                                                       *
+     *                                                                                       *
+     * **********************************TEST FUNCTIONS***************************************
+     *                                                                                       *
+     *                                                                                       *
+     * ***************************************************************************************/
+
+    public String getBrifeintroductionTEST(String subUri) throws IOException {
+        Document document = parser.getHtml(subUri);
+        return getBrifeintroduction_alternative(document);
+    }
+
 }

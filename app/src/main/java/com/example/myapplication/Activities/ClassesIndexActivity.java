@@ -13,18 +13,22 @@ import com.example.myapplication.Component.Adapters.ClassesIndexAdapter;
 import com.example.myapplication.Component.DocParser.JDK9JavaDocParser;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.ClassesItem;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class ClassesIndexActivity extends AppCompatActivity {
-    String subUri;
+    private String subUri;
+    private String Uri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_classes_index);
         Intent intent = getIntent();
         subUri = intent.getStringExtra("herf");
+        Uri = intent.getStringExtra("parentHerf");
         init();
     }
     private void init() {
@@ -32,6 +36,7 @@ public class ClassesIndexActivity extends AppCompatActivity {
             @Override
             protected ArrayList<ClassesItem> doInBackground(Void... voids) {
                 JDK9JavaDocParser parser = ((SpiderApplication) ClassesIndexActivity.this.getApplication()).getDocServer();
+                System.out.println(Uri);
                 try {
                     return parser.getAllClassesIdex(subUri);
                 } catch (IOException e) {
@@ -45,7 +50,7 @@ public class ClassesIndexActivity extends AppCompatActivity {
             protected void onPostExecute(ArrayList<ClassesItem> classesItems) {
                 RecyclerView Index = ClassesIndexActivity.this.findViewById(R.id.ClassesIndexActivity_Index);
                 LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ClassesIndexActivity.this);
-                ClassesIndexAdapter adapter = new ClassesIndexAdapter(Index, classesItems);
+                ClassesIndexAdapter adapter = new ClassesIndexAdapter(Index, classesItems,Uri);
                 Index.setLayoutManager(linearLayoutManager);
                 Index.setAdapter(adapter);
             }

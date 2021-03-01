@@ -7,32 +7,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.myapplication.Activities.ClassesIndexActivity;
 import com.example.myapplication.Activities.DocContentActivity;
 import com.example.myapplication.Component.IndexItem;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.ClassesItem;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 
-public class ClassesIndexAdapter extends RecyclerView.Adapter {
+public class PackagesIndexAdapter extends RecyclerView.Adapter {
+    private ArrayList<ClassesItem> Packages;
     private ViewGroup parent;
-    private ArrayList<ClassesItem> ClassesIndex;
-    private String Uir;
-    public class ClassesIndexViewHolder extends RecyclerView.ViewHolder{
+
+    public class PackagesViewHolder extends RecyclerView.ViewHolder{
         private final IndexItem textView;
-        public ClassesIndexViewHolder(@NonNull final View itemView) {
+        public PackagesViewHolder(@NonNull final View itemView) {
             super(itemView);
             View.OnClickListener listener=new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(parent.getContext(), DocContentActivity.class);
+                    Intent intent=new Intent(parent.getContext(), ClassesIndexActivity.class);
                     intent.putExtra("herf",textView.getUri());
+                    intent.putExtra("parentHerf",textView.getUri().replace("package-frame.html",""));
                     parent.getContext().startActivity(intent);
                 }
             };
@@ -40,33 +37,33 @@ public class ClassesIndexAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(listener);
             textView.setOnClickListener(listener);
         }
-        public TextView getTextView(){
+
+        public IndexItem getTextView() {
             return textView;
         }
     }
 
-    public ClassesIndexAdapter(ViewGroup parent, ArrayList<ClassesItem> classesIndex,String Uri) {
+    public PackagesIndexAdapter(ArrayList<ClassesItem> packages, ViewGroup parent) {
+        Packages = packages;
         this.parent = parent;
-        this.ClassesIndex = classesIndex;
-        this.Uir=Uri;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.text_row_item , parent, false);
-        return new ClassesIndexViewHolder(view);
+        return new PackagesViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-        IndexItem textView= (IndexItem) ((ClassesIndexViewHolder)viewHolder).getTextView();
-        textView.setText(ClassesIndex.get(i).getTittle());
-        textView.setUri(Uir+ClassesIndex.get(i).getHref());
+        IndexItem item=((PackagesViewHolder) viewHolder).getTextView();
+        item.setUri(Packages.get(i).getHref());
+        item.setText(Packages.get(i).getTittle());
     }
 
     @Override
     public int getItemCount() {
-        return ClassesIndex.size();
+        return Packages.size();
     }
 }

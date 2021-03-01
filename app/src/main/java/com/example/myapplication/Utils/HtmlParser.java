@@ -3,6 +3,7 @@ package com.example.myapplication.Utils;
 import com.example.myapplication.domain.ClassesItem;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -96,13 +97,24 @@ public class HtmlParser {
         }
         return Uris;
     }
+
     public List<String> getAttributesFromElementByCssQuery(String cssQuery, Document document, String Attr){
         if (Attr.equals("TEXT"))return document.select(cssQuery).eachText();
         return document.select(cssQuery).eachAttr(Attr);
     }
- public List<String> getAttributesFromElementByCssQuery(String cssQuery, Element element, String Attr){
+
+    public List<String> getAttributesFromElementByCssQuery(String cssQuery, Element element, String Attr){
         if (Attr.equals("TEXT"))return element.select(cssQuery).eachText();
         return element.select(cssQuery).eachAttr(Attr);
+    }
+
+    public List<DataNode> textNodes(Document document, String cssQuery){
+        try {
+            Element element=document.select(cssQuery).get(0);
+            return  element.dataNodes();
+        } catch (IndexOutOfBoundsException|NullPointerException e) {
+            return null;
+        }
     }
 
 }

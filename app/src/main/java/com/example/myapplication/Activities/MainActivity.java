@@ -12,6 +12,7 @@ import com.example.myapplication.Component.Adapters.ChoicesIndexAdapter;
 import com.example.myapplication.Component.DocParser.JDK9JavaDocParser;
 import com.example.myapplication.R;
 import com.example.myapplication.domain.ChoiceItem;
+import com.example.myapplication.domain.ClassesItem;
 
 import java.io.IOException;
 import java.io.InputStream;
