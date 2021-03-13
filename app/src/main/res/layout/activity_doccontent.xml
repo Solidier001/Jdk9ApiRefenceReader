@@ -28,15 +28,14 @@
                 android:clickable="false"
                 android:textSize="80px" />
 
-            <TextView
-                android:id="@+id/DocContent_BriefIntroduction"
-                android:textColor="#333"
+            <com.example.myapplication.Component.MaxRecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30px"
-                android:clickable="false"
-                android:textSize="40px"
-                android:fontFamily="monospace"/>
+                android:layout_marginTop="20dp"
+                android:id="@+id/DocContent_BriefIntroduction"
+                >
+            </com.example.myapplication.Component.MaxRecyclerView>
+
             <TextView
                 android:layout_marginTop="30px"
                 android:layout_marginLeft="20px"
@@ -47,13 +46,54 @@
                 android:background="@drawable/border"
                 android:textColor="#000"
                 android:fontFamily="sans-serif-light"/>
-            <android.support.v7.widget.RecyclerView
+            <TextView
+                android:layout_marginTop="30px"
+                android:paddingTop="20px"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:text="Field"
+                android:textSize="50px"
+                android:background="@drawable/table_head"
+                android:textColor="#000000"
+                android:fontFamily="sans-serif-light"/>
+            <com.example.myapplication.Component.MaxRecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/doccontent_FieldTable"
+                >
+            </com.example.myapplication.Component.MaxRecyclerView>
+            <TextView
+                android:layout_marginTop="30px"
+                android:paddingTop="20px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Constructor"
+                android:textSize="50px"
+                android:background="@drawable/table_head"
+                android:textColor="#000000"
+                android:fontFamily="sans-serif-light"/>
+            <com.example.myapplication.Component.MaxRecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/doccontent_ConstructorTable"
+                >
+            </com.example.myapplication.Component.MaxRecyclerView>
+            <TextView
+                android:layout_marginTop="30px"
+                android:paddingTop="20px"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Method"
+                android:textSize="50px"
+                android:background="@drawable/table_head"
+                android:textColor="#000000"
+                android:fontFamily="sans-serif-light"/>
+            <com.example.myapplication.Component.MaxRecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/doccontent_MethodTable"
                 >
-            </android.support.v7.widget.RecyclerView>
+            </com.example.myapplication.Component.MaxRecyclerView>
         </LinearLayout>
     </ScrollView>
 

@@ -1,13 +1,15 @@
 package com.example.myapplication.domain;
 
+import java.util.ArrayList;
+
 public class Doc {
     private String ClassName;
-    private String Brifeintroduction;
+    private ArrayList<String> Brifeintroduction;
     private MethodSummaryTable methodSummaryTable;
     private ConstructorSumaryTable constructorSumary;
     private FieldSumaryTable fieldSumaryTable;
 
-    public Doc(String className, String brifeintroduction, MethodSummaryTable methodSummaryTable, ConstructorSumaryTable constructorSumary, FieldSumaryTable fieldSumaryTable) {
+    public Doc(String className, ArrayList<String> brifeintroduction, MethodSummaryTable methodSummaryTable, ConstructorSumaryTable constructorSumary, FieldSumaryTable fieldSumaryTable) {
         ClassName = className;
         Brifeintroduction = brifeintroduction;
         this.methodSummaryTable = methodSummaryTable;
@@ -19,7 +21,7 @@ public class Doc {
         return ClassName;
     }
 
-    public String getBrifeintroduction() {
+    public ArrayList<String> getBrifeintroduction() {
         return Brifeintroduction;
     }
 

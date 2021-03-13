@@ -14,8 +14,8 @@ import com.example.myapplication.domain.MethodSummaryTableItem;
 import java.util.ArrayList;
 
 public class MethodsFiller extends RecyclerView.Adapter {
-    ArrayList<MethodSummaryTableItem> methods;
-    ViewGroup parent;
+    private ArrayList<MethodSummaryTableItem> methods;
+    private ViewGroup parent;
 
     public MethodsFiller(ArrayList<MethodSummaryTableItem> methods, ViewGroup parent) {
         this.methods = methods;

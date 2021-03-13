@@ -15,16 +15,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.jetbrains.annotations.NotNull;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,6 +33,10 @@ public class JDK9JavaDocParser {
     Properties cssQuery;
     Properties spiderConfig;
     HtmlParser parser;
+
+    private static final String[] blockTags={
+            "code","em"
+    };
 
     public JDK9JavaDocParser(Gson gson, Properties cssQuery, Properties spiderConfig, HtmlParser parser) {
         this.gson = gson;
@@ -47,7 +51,7 @@ public class JDK9JavaDocParser {
         this.spiderConfig = new Properties();
         cssQuery.load(cssQueryInputStream);
         spiderConfig.load(spiderConfigInputStream);
-        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"));
+        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"),blockTags);
     }
 
     public JDK9JavaDocParser() {
@@ -59,13 +63,13 @@ public class JDK9JavaDocParser {
     public void load(InputStream cssQueryInputStream, InputStream spiderConfigInputStream) throws IOException {
         cssQuery.load(cssQueryInputStream);
         spiderConfig.load(spiderConfigInputStream);
-        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"));
+        this.parser = new HtmlParser(spiderConfig.getProperty("baseUri"),blockTags);
     }
 
     public Doc getDoc(String subUri) throws IOException {
         Document document = parser.getHtml(subUri);
         MethodSummaryTable methodSummaryTable = getMethodSummaryTable(document);
-        String BriefIntroduction = getBrifeintroduction(document);
+        ArrayList<String> BriefIntroduction = getBrifeintroduction_alternative(document);
         String Classname = getClassName(document);
         ConstructorSumaryTable constructorSumary = getConstructorSumaryTable(document);
         FieldSumaryTable fieldSumaryTable = getFieldSumaryTable(document);
@@ -99,12 +103,30 @@ public class JDK9JavaDocParser {
         return brief_introduction;
     }
 
-    private String getBrifeintroduction_alternative(Document document) {
-        List<DataNode> DataNodes=parser.textNodes(document,cssQuery.getProperty("brief_introduction"));
-        DataNode element=DataNodes.get(0);
-        return element.getWholeData();
+    private ArrayList<String> getBrifeintroduction_alternative(Document document) {
+        Node element = null;
+        int i;
+        List<Node> nodes = parser.textNodesWithoutBlock(document, cssQuery.getProperty("brief_introduction"));
+        ArrayList<String> strings = new ArrayList<>(nodes.size());
+        for (Node node : nodes) {
+            if (node instanceof TextNode)strings.add(((TextNode)node).text());
+            else if (node instanceof Element) {
+                if (node.nodeName().equals("ol") || node.nodeName().equals("ul")) {
+                    i = 1;
+                    Iterator<Node> iterator = node.childNodes().iterator();
+                    while (iterator.hasNext()) {
+                        element = iterator.next();
+                        if (element instanceof Element) {
+                            strings.add("     " + i + '.' + ((Element) element).text());
+                            i++;
+                        }
+                    }
+                    iterator = null;
+                } else strings.add(((Element) node).text());
+            }
+        }
+        return strings;
     }
-
 
 
     private String getClassName(Document document) {
@@ -154,10 +176,10 @@ public class JDK9JavaDocParser {
     }
 
     public ArrayList<ChoiceItem> getIndex() throws IOException {
-        ArrayList<ChoiceItem> index=new ArrayList<ChoiceItem>(3);
-        index.add(new ChoiceItem("All classes and interfaces (except non-static nested types)",spiderConfig.getProperty("AllClass"), ClassesIndexActivity.class));
-        index.add(new ChoiceItem("AllPackages",spiderConfig.getProperty("AllPackages"), PackagesActivity.class));
-        index.add(new ChoiceItem("AllModules",spiderConfig.getProperty("AllModules"), ModulesActivity.class));
+        ArrayList<ChoiceItem> index = new ArrayList<ChoiceItem>(3);
+        index.add(new ChoiceItem("All classes and interfaces (except non-static nested types)", spiderConfig.getProperty("AllClass"), ClassesIndexActivity.class));
+        index.add(new ChoiceItem("AllPackages", spiderConfig.getProperty("AllPackages"), PackagesActivity.class));
+        index.add(new ChoiceItem("AllModules", spiderConfig.getProperty("AllModules"), ModulesActivity.class));
         return index;
     }
 
@@ -180,7 +202,7 @@ public class JDK9JavaDocParser {
      *                                                                                       *
      * ***************************************************************************************/
 
-    public String getBrifeintroductionTEST(String subUri) throws IOException {
+    public ArrayList<String> getBrifeintroductionTEST(String subUri) throws IOException {
         Document document = parser.getHtml(subUri);
         return getBrifeintroduction_alternative(document);
     }
